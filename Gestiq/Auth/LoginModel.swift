@@ -9,8 +9,12 @@ final class LoginModel {
     private(set) var isLoading = false
     private(set) var isCheckingSession = true
     private(set) var errorMessage: String?
+    private(set) var adminRevision = 0
+    private(set) var businessRevision = 0
     private(set) var authenticatedSession: LoginSession?
     private var client: AuthClient?
+    private var isSigningOut = false
+    private var renewal: Task<LoginSession, Error>?
     private var hasStarted = false
 
     init(client: AuthClient? = nil) { self.client = client }
@@ -66,10 +70,12 @@ final class LoginModel {
 
     func logout() async {
         guard !isLoading else { return }
+        isSigningOut = true
         isLoading = true
         errorMessage = nil
-        defer { isLoading = false }
+        defer { isLoading = false; isSigningOut = false }
         do {
+            if let renewal { _ = try? await renewal.value }
             try await authClient().logout()
             authenticatedSession = nil
             password = ""
@@ -82,12 +88,54 @@ final class LoginModel {
         isLoading = true
         defer { isLoading = false }
         do {
-            authenticatedSession = try await authClient().refresh()
+            _ = try await refreshAccess()
             errorMessage = nil
         } catch AuthError.expired {
             authenticatedSession = nil
             errorMessage = AuthError.expired.localizedDescription
         } catch { errorMessage = message(for: error) }
+    }
+
+    func authorizedData(path: String, query: [URLQueryItem] = [], method: APIRequestMethod = .get, body: Data? = nil) async throws -> Data {
+        guard !isSigningOut else { throw CancellationError() }
+        guard var current = authenticatedSession else { throw AuthError.expired }
+        do {
+            if current.needsRenewal { current = try await refreshAccess() }
+            let client = try authClient()
+            do {
+                return try await client.request(path: path, query: query, token: current.token, method: method, body: body)
+            } catch AuthError.unauthorized {
+                let refreshed = try await refreshAccess()
+                do {
+                    return try await client.request(path: path, query: query, token: refreshed.token, method: method, body: body)
+                } catch AuthError.unauthorized {
+                    try client.invalidate()
+                    throw AuthError.expired
+                }
+            }
+        } catch AuthError.expired {
+            authenticatedSession = nil
+            errorMessage = AuthError.expired.localizedDescription
+            throw AuthError.expired
+        }
+    }
+
+    func businessChanged() { businessRevision += 1 }
+
+    func administrationChanged() { adminRevision += 1 }
+
+    private func refreshAccess() async throws -> LoginSession {
+        guard !isSigningOut else { throw CancellationError() }
+        if let renewal { return try await renewal.value }
+        let client = try authClient()
+        let task = Task { try await client.refresh() }
+        renewal = task
+        defer { renewal = nil }
+        let refreshed = try await task.value
+        guard !isSigningOut else { throw CancellationError() }
+        guard authenticatedSession != nil else { throw AuthError.expired }
+        authenticatedSession = refreshed
+        return refreshed
     }
 
     private func message(for error: Error) -> String {

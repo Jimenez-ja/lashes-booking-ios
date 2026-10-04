@@ -1,8 +1,18 @@
 # Gestiq para iPhone
 
-App nativa en SwiftUI, iOS 17 o posterior, sin dependencias externas. Incluye login real por correo/contraseña y pantalla de cuenta con nombre, correo y cierre de sesión.
+App nativa en SwiftUI, iOS 17 o posterior, sin dependencias externas. Incluye login real, cuenta y administración de clientes y negocios.
+
+Las pestañas **Clientes** y **Negocios** aparecen para cuentas con acceso a esas rutas según los permisos enviados por el backend. Incluyen búsqueda por nombre/correo/teléfono (también nombre del negocio), paginación de 10 registros y detalles con contacto, verificación, estado, actividad y citas recientes. Los negocios muestran políticas, horarios y vinculación guardada de Mercado Pago. Todo navega dentro de la app.
+
+El administrador principal (`role.name=admin_master`) puede desactivar cuentas activas y reactivar cuentas desactivadas desde su detalle, con confirmación. El administrador interno tiene acceso de consulta. Las acciones usan los endpoints existentes y actualizan los datos después de la confirmación del servidor. Ante un fallo de conexión, comprueba el detalle antes de reintentar; la app no repite automáticamente una petición con resultado desconocido.
+
+La pestaña **Inicio** muestra el dashboard administrativo para roles `admin_master` y `admin_intern` con acceso a `/dashboard`: cuentas y servicios actuales, citas del mes y negocios con más reservas. Permite seleccionar mes/año (2000–2099), actualizar y abrir detalles de negocios dentro de la app. El primer mes lo decide el backend según su zona horaria.
+
+Para una cuenta de negocio (`customer`), **Mi negocio** permite crear o editar nombre, descripción, ubicación, foto de perfil, portada, horarios semanales y políticas de cancelación/reagenda. **Servicios** incluye búsqueda, paginación, creación y edición con fotos, duración, descuentos, retoques, anticipos y extras. Desde el detalle puedes archivar o publicar un servicio con confirmación. Los anticipos requieren la vinculación de Mercado Pago ya registrada en la cuenta. Las fotos se seleccionan con el selector nativo y se convierten a JPEG antes de enviarse; se admiten de 1 a 5 por servicio. El backend limita cada petición a 5 cambios de fotos y 30 entradas de extras; reemplazos grandes deben guardarse en grupos más pequeños. La vinculación de pagos aún no se realiza desde la app.
 
 ## Ejecutar
+
+**Mi negocio** organiza sus controles en Perfil, Horarios y Políticas. Incluye botón Guardar permanente, campos etiquetados, agregar/editar horarios y eliminarlos con confirmación, anticipación editable directamente y guía para empresas. **Ver perfil público** carga los datos guardados y servicios dentro de la app. **Compartir negocio y QR** permite copiar o compartir el enlace y compartir/guardar el QR con el menú de iOS.
 
 1. Instala Xcode y abre `Gestiq.xcodeproj`.
 2. Selecciona el esquema `Gestiq` y un simulador iPhone; pulsa Run (⌘R).
@@ -22,6 +32,12 @@ Pruebas del contrato de autenticación con respuestas simuladas, sin llamadas al
 mkdir -p /tmp/gestiq-swift-cache
 swiftc -module-cache-path /tmp/gestiq-swift-cache Gestiq/Auth/AuthClient.swift Gestiq/Auth/KeychainSessionStore.swift Gestiq/Auth/LoginModel.swift Tests/AuthClientChecks.swift -o /tmp/gestiq-auth-checks
 /tmp/gestiq-auth-checks
+
+swiftc -module-cache-path /tmp/gestiq-swift-cache Gestiq/Auth/AuthClient.swift Gestiq/Auth/KeychainSessionStore.swift Gestiq/Auth/LoginModel.swift Gestiq/Admin/AdminModels.swift Gestiq/Admin/AdminDashboardModel.swift Tests/AdminChecks.swift -o /tmp/gestiq-admin-checks
+/tmp/gestiq-admin-checks
+
+swiftc -module-cache-path /tmp/gestiq-swift-cache Gestiq/Auth/AuthClient.swift Gestiq/Auth/KeychainSessionStore.swift Gestiq/Auth/LoginModel.swift Gestiq/Admin/AdminModels.swift Gestiq/Business/BusinessModels.swift Gestiq/Business/BusinessState.swift Tests/BusinessChecks.swift -o /tmp/gestiq-business-checks
+/tmp/gestiq-business-checks
 ```
 
 Con Xcode instalado:

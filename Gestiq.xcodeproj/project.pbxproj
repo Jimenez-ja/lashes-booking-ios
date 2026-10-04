@@ -7,6 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0000000000000000000000D8 /* ServicesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000007C /* ServicesView.swift */; };
+		0000000000000000000000D7 /* CompanyEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000007B /* CompanyEditorView.swift */; };
+		0000000000000000000000D6 /* BusinessPhotos.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000007A /* BusinessPhotos.swift */; };
+		0000000000000000000000D5 /* BusinessState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000079 /* BusinessState.swift */; };
+		0000000000000000000000D4 /* BusinessModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000078 /* BusinessModels.swift */; };
+		0000000000000000000000D3 /* AdminDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000077 /* AdminDashboardView.swift */; };
+		0000000000000000000000D2 /* AdminDashboardModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000076 /* AdminDashboardModel.swift */; };
+		0000000000000000000000D1 /* AdminDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000075 /* AdminDetailView.swift */; };
+		0000000000000000000000D0 /* AdminDirectoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000074 /* AdminDirectoryView.swift */; };
+		0000000000000000000000CF /* AdminModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000073 /* AdminModels.swift */; };
 		0000000000000000000000C8 /* GestiqApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000064 /* GestiqApp.swift */; };
 		0000000000000000000000C9 /* Auth/AuthClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000065 /* Auth/AuthClient.swift */; };
 		0000000000000000000000CA /* Auth/LoginModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000066 /* Auth/LoginModel.swift */; };
@@ -17,6 +27,16 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		00000000000000000000007C /* ServicesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Business/ServicesView.swift; sourceTree = "<group>"; };
+		00000000000000000000007B /* CompanyEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Business/CompanyEditorView.swift; sourceTree = "<group>"; };
+		00000000000000000000007A /* BusinessPhotos.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Business/BusinessPhotos.swift; sourceTree = "<group>"; };
+		000000000000000000000079 /* BusinessState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Business/BusinessState.swift; sourceTree = "<group>"; };
+		000000000000000000000078 /* BusinessModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Business/BusinessModels.swift; sourceTree = "<group>"; };
+		000000000000000000000077 /* AdminDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Admin/AdminDashboardView.swift; sourceTree = "<group>"; };
+		000000000000000000000076 /* AdminDashboardModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Admin/AdminDashboardModel.swift; sourceTree = "<group>"; };
+		000000000000000000000075 /* AdminDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Admin/AdminDetailView.swift; sourceTree = "<group>"; };
+		000000000000000000000074 /* AdminDirectoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Admin/AdminDirectoryView.swift; sourceTree = "<group>"; };
+		000000000000000000000073 /* AdminModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Admin/AdminModels.swift; sourceTree = "<group>"; };
 		000000000000000000000064 /* GestiqApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GestiqApp.swift; sourceTree = "<group>"; };
 		000000000000000000000065 /* Auth/AuthClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Auth/AuthClient.swift; sourceTree = "<group>"; };
 		000000000000000000000066 /* Auth/LoginModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Auth/LoginModel.swift; sourceTree = "<group>"; };
@@ -56,6 +76,16 @@
 				000000000000000000000065 /* Auth/AuthClient.swift */,
 				000000000000000000000066 /* Auth/LoginModel.swift */,
 				000000000000000000000072 /* Auth/KeychainSessionStore.swift */,
+				00000000000000000000007C /* ServicesView.swift */,
+				00000000000000000000007B /* CompanyEditorView.swift */,
+				00000000000000000000007A /* BusinessPhotos.swift */,
+				000000000000000000000079 /* BusinessState.swift */,
+				000000000000000000000078 /* BusinessModels.swift */,
+				000000000000000000000077 /* AdminDashboardView.swift */,
+				000000000000000000000076 /* AdminDashboardModel.swift */,
+				000000000000000000000075 /* AdminDetailView.swift */,
+				000000000000000000000074 /* AdminDirectoryView.swift */,
+				000000000000000000000073 /* AdminModels.swift */,
 				000000000000000000000067 /* Views/LoginView.swift */,
 				000000000000000000000068 /* Views/LoggedInView.swift */,
 				00000000000000000000006E /* Info.plist */,
@@ -145,6 +175,16 @@
 				0000000000000000000000C9 /* Auth/AuthClient.swift in Sources */,
 				0000000000000000000000CA /* Auth/LoginModel.swift in Sources */,
 				0000000000000000000000CE /* Auth/KeychainSessionStore.swift in Sources */,
+				0000000000000000000000D8 /* ServicesView.swift in Sources */,
+				0000000000000000000000D7 /* CompanyEditorView.swift in Sources */,
+				0000000000000000000000D6 /* BusinessPhotos.swift in Sources */,
+				0000000000000000000000D5 /* BusinessState.swift in Sources */,
+				0000000000000000000000D4 /* BusinessModels.swift in Sources */,
+				0000000000000000000000D3 /* AdminDashboardView.swift in Sources */,
+				0000000000000000000000D2 /* AdminDashboardModel.swift in Sources */,
+				0000000000000000000000D1 /* AdminDetailView.swift in Sources */,
+				0000000000000000000000D0 /* AdminDirectoryView.swift in Sources */,
+				0000000000000000000000CF /* AdminModels.swift in Sources */,
 				0000000000000000000000CB /* Views/LoginView.swift in Sources */,
 				0000000000000000000000CC /* Views/LoggedInView.swift in Sources */,
 			);

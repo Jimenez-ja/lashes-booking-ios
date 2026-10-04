@@ -21,12 +21,39 @@ struct AccountUser: Decodable {
     let email: String?
     let firstname: String?
     let surname: String?
+    let role: AccountRole?
+    let mercadoPagoPublicKey: String?
+
+    var canManageBusiness: Bool { role?.canonicalName == "customer" || (!isAdministrator && allows(route: "/services")) }
+    var canManageAccounts: Bool { role?.canonicalName == "admin_master" }
+    var isAdministrator: Bool { role?.canonicalName == "admin_master" || role?.canonicalName == "admin_intern" }
+
+    func allows(route: String) -> Bool {
+        role?.pageRoles?.contains { $0.page?.route == route } ?? false
+    }
 
     var displayName: String {
         let name = [firstname, surname].compactMap { $0 }
             .joined(separator: " ").trimmingCharacters(in: .whitespacesAndNewlines)
         return name.isEmpty ? "Mi cuenta" : name
     }
+}
+
+struct AccountRole: Decodable {
+    let name: String?
+    let roleName: String?
+    let pageRoles: [AccountPageRole]?
+    var canonicalName: String? {
+        (name ?? roleName)?.trimmingCharacters(in: .whitespacesAndNewlines)
+            .lowercased().replacingOccurrences(of: " ", with: "_")
+            .replacingOccurrences(of: "-", with: "_")
+    }
+}
+struct AccountPageRole: Decodable {
+    let page: AccountPage?
+}
+struct AccountPage: Decodable {
+    let route: String?
 }
 
 struct LoginSession: Decodable {
@@ -50,10 +77,14 @@ struct LoginSession: Decodable {
 enum AuthError: LocalizedError {
     case message(String)
     case expired
+    case unauthorized
+    case noCompany
 
     var errorDescription: String? {
         switch self {
         case .message(let text): return text
+        case .noCompany: return "Todavía no tienes un negocio registrado."
+        case .unauthorized: return "No se pudo validar tu sesión."
         case .expired: return "Tu sesión caducó. Inicia sesión de nuevo."
         }
     }
@@ -69,6 +100,8 @@ protocol RefreshSessionStore {
     func save(_ session: StoredRefreshSession) throws
     func clear() throws
 }
+
+enum APIRequestMethod: String { case get = "GET", delete = "DELETE", patch = "PATCH", post = "POST" }
 
 final class AuthClient {
     let configuration: AuthConfiguration
@@ -106,6 +139,40 @@ final class AuthClient {
         _ = try await post(path: "auth/logout", body: nil)
         try store.clear()
     }
+
+    func request(path: String, query: [URLQueryItem], token: String, method: APIRequestMethod, body: Data? = nil) async throws -> Data {
+        var components = URLComponents(url: configuration.baseURL.appendingPathComponent(path), resolvingAgainstBaseURL: false)!
+        if !query.isEmpty { components.queryItems = query }
+        var request = URLRequest(url: components.url!)
+        request.timeoutInterval = 20
+        request.httpMethod = method.rawValue
+        request.httpBody = body
+        if body != nil { request.setValue("application/json", forHTTPHeaderField: "Content-Type") }
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        let (data, response) = try await session.data(for: request)
+        guard let http = response as? HTTPURLResponse else {
+            throw AuthError.message("El servidor no devolvió una respuesta válida.")
+        }
+        if http.statusCode == 401 { throw AuthError.unauthorized }
+        if http.statusCode == 403 { throw AuthError.message("Tu cuenta no tiene permiso para realizar esta acción.") }
+        if http.statusCode == 404 { throw AuthError.message("Este registro ya no está disponible.") }
+        guard (200..<300).contains(http.statusCode) else {
+            let object = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any]
+            let message = (object?["message"] as? String) ?? (object?["message"] as? [String])?.joined(separator: "\n")
+            if http.statusCode == 400, path == "company/myself", message == "No tienes una empresa registrada" {
+                throw AuthError.noCompany
+            }
+            let knownMessages = ["User is not active": "La cuenta ya no está activa. Actualiza el detalle.",
+                "User is not removed": "La cuenta ya no está desactivada. Actualiza el detalle."]
+            throw AuthError.message(knownMessages[message ?? ""] ?? ((400..<500).contains(http.statusCode) && message != nil ? message! : (http.statusCode == 429
+                ? "Demasiadas solicitudes. Espera un momento e intenta de nuevo."
+                : "No se pudo completar la solicitud. Intenta de nuevo.")))
+        }
+        return data
+    }
+
+    func invalidate() throws { try store.clear() }
 
     private func authenticate(path: String, body: Data?) async throws -> LoginSession {
         struct Envelope: Decodable { let data: LoginSession }

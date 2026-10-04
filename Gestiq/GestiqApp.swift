@@ -11,7 +11,7 @@ struct GestiqApp: App {
                 if login.isCheckingSession {
                     sessionLoadingView
                 } else if login.authenticatedSession != nil {
-                    LoggedInView(model: login)
+                    AuthenticatedRootView(model: login)
                 } else {
                     LoginView(model: login)
                 }
