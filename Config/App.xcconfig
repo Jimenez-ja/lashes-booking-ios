@@ -1,0 +1,4 @@
+// Public API configuration. Keep credentials out of this file.
+// xcconfig treats double slashes as comments; the empty expansion preserves URLs.
+API_BASE_URL = https:/$()/lashes-booking-backend-production.up.railway.app/api
+AUTH_ORIGIN = https:/$()/gestiq.app
