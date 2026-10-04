@@ -2,6 +2,8 @@
 
 Native SwiftUI iPhone app; iOS 17+, scheme `Gestiq` in `Gestiq.xcodeproj`. No third-party dependencies.
 
+- `docs/ARQUITECTURA_PAGOS_APPLE.md`: proposed payment architecture and App Review rationale. Digital memberships use StoreKit/IAP; physical appointment advances use merchant Mercado Pago Checkout Pro and backend-verified payment state. Distinguishes Apple Pay from IAP and integration choices from Apple requirements. Documentation does not establish implementation or verified marketplace fund routing.
+
 - `Gestiq/GestiqApp.swift`: owns observable session state; restores on launch, selects retry/login/authenticated screens and checks access expiry every minute while active.
 - `Gestiq/Admin/AdminDetailView.swift`: `AuthenticatedRootView` adds Clients/Businesses tabs when login `user.role.pageRoles[].page.route` allows `/clients` or `/customers`; administrative Inicio requires admin role and `/dashboard`; Account always available. Native detail shows account/contact, booking summaries, five recent appointments, business policies/hours and saved payment linkage. Activation actions appear only in details (`AdminAccountActionView`), with confirmation. Role names are normalized (name/roleName); account status supports canonical and Spanish labels. Unknown roles/statuses hide actions. Server role/status checks remain authoritative. Company hours use Monday=0; no external links.
 - `Gestiq/Admin/AdminDirectoryView.swift`: native searchable paginated lists (10 per page), detail navigation, pull-to-refresh, empty/error/retry states. Search capped at 100 characters, debounced 300 ms; changes reset page.

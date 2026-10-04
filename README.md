@@ -1,5 +1,7 @@
 # Gestiq para iPhone
 
+Arquitectura de pagos prevista y criterios para App Review: [Arquitectura de pagos y reglas de Apple](docs/ARQUITECTURA_PAGOS_APPLE.md). Separa membresías digitales mediante IAP y adelantos de citas presenciales mediante Mercado Pago; es una propuesta pendiente de implementación.
+
 App nativa en SwiftUI, iOS 17 o posterior, sin dependencias externas. Incluye login real, cuenta y administración de clientes y negocios.
 
 Las pestañas **Clientes** y **Negocios** aparecen para cuentas con acceso a esas rutas según los permisos enviados por el backend. Incluyen búsqueda por nombre/correo/teléfono (también nombre del negocio), paginación de 10 registros y detalles con contacto, verificación, estado, actividad y citas recientes. Los negocios muestran políticas, horarios y vinculación guardada de Mercado Pago. Todo navega dentro de la app.
